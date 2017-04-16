@@ -152,6 +152,12 @@ inline void getData()
                 Serial.write(RETURN_CODES::SUCCESS);
             }
         }
+        else if (cmd == CMDTYPE::SETUP_DATA)
+        {
+            for(int i=0; i<size; i++) Serial.read();
+            // Just succeed. Config is hardcoded at compile time
+            Serial.write(RETURN_CODES::SUCCESS);
+        }
         else if (cmd == CMDTYPE::BRIGHTNESS)
         {
             uint8_t result = RETURN_CODES::SUCCESS;
