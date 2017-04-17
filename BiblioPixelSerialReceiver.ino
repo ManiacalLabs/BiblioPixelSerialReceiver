@@ -7,13 +7,13 @@ https://github.com/ManiacalLabs/BiblioPixelSmartMatrix
 **********************************/
 
 #include "FastLED.h"
-#include <EEPROM.h>
+//#include <EEPROM.h> // not available in M0
 
 /****************************
 All Firmware options go here!
 ****************************/
 // How many leds in your strip?
-#define NUM_LEDS 8 * 8
+#define NUM_LEDS 32 * 56
 
 #define DATA_PIN MOSI
 #define CLOCK_PIN SCK
@@ -67,7 +67,7 @@ inline void setupFastLED()
     //Just change the config options above
 
     //Data and Clock LEDs
-    FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+  FastLED.addLeds<LED_TYPE, CLOCK_PIN, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS); // swap clock/data pins
 
     //Data only LEDs
     //FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
@@ -76,13 +76,22 @@ inline void setupFastLED()
     FastLED.show();
 }
 
+void fill(const struct CRGB & color){
+  for(int ii=0; ii<NUM_LEDS; ii++){
+    leds[ii] = color;
+    if(ii % 8 == 7){
+      FastLED.show();
+    }
+  }
+}
 void setup()
 {
+    setupFastLED();
+    //FastLED.setBrightness(4); fill(CRGB::Blue);fill(CRGB::Black);
+
     // Full USB 1.1 speed, assuming your chip has native USB
     Serial.begin(12000000);
     Serial.setTimeout(1000);
-
-    setupFastLED();
 }
 
 #define EMPTYMAX 100
@@ -137,7 +146,7 @@ inline void getData()
         }
         else if(cmd == CMDTYPE::GETID)
         {
-            Serial.write(EEPROM.read(16));
+	  //Serial.write(EEPROM.read(16));
         }
         else if(cmd == CMDTYPE::SETID)
         {
@@ -148,7 +157,7 @@ inline void getData()
             else
             {
                 uint8_t id = Serial.read();
-                EEPROM.write(16, id);
+                //EEPROM.write(16, id);
                 Serial.write(RETURN_CODES::SUCCESS);
             }
         }
