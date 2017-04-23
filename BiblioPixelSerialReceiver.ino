@@ -5,13 +5,19 @@ but could be reworked for other libraries.
 If using "SmartMatrix" style panels checkout:
 https://github.com/ManiacalLabs/BiblioPixelSmartMatrix
 **********************************/
-
 #include "FastLED.h"
-#include <EEPROM.h>
 
 /****************************
 All Firmware options go here!
 ****************************/
+// Comment out below line if EEPROM unavailable on your board
+#define USE_EEPROM
+
+// If not using EEPROM, you can specify device ID here
+#ifndef USE_EEPROM
+    const uint8_t deviceID = 0;
+#endif
+
 // How many leds in your strip?
 #define NUM_LEDS 8 * 8
 
@@ -25,6 +31,10 @@ CRGB leds[NUM_LEDS]; // Define the array of leds
 /***************************
 End Firmware options
 ***************************/
+
+#ifdef USE_EEPROM
+    #include <EEPROM.h>
+#endif
 
 #define FIRMWARE_VER 3
 
@@ -137,7 +147,11 @@ inline void getData()
         }
         else if(cmd == CMDTYPE::GETID)
         {
-            Serial.write(EEPROM.read(16));
+            #ifdef USE_EEPROM
+                Serial.write(EEPROM.read(16));
+            #else
+                Serial.write(deviceID);
+            #endif
         }
         else if(cmd == CMDTYPE::SETID)
         {
@@ -148,7 +162,9 @@ inline void getData()
             else
             {
                 uint8_t id = Serial.read();
-                EEPROM.write(16, id);
+                #ifdef USE_EEPROM
+                    EEPROM.write(16, id);
+                #endif
                 Serial.write(RETURN_CODES::SUCCESS);
             }
         }
