@@ -10,8 +10,8 @@ https://github.com/ManiacalLabs/BiblioPixelSmartMatrix
 /****************************
 All Firmware options go here!
 ****************************/
-// Comment out below line if EEPROM unavailable on your board
-#define USE_EEPROM
+// Uncomment below line if EEPROM available on your board
+// #define USE_EEPROM
 
 // If not using EEPROM, you can specify device ID here
 #ifndef USE_EEPROMo
