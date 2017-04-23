@@ -14,7 +14,7 @@ All Firmware options go here!
 #define USE_EEPROM
 
 // If not using EEPROM, you can specify device ID here
-#ifndef USE_EEPROM
+#ifndef USE_EEPROMo
     const uint8_t deviceID = 0;
 #endif
 
@@ -77,7 +77,7 @@ inline void setupFastLED()
     //Just change the config options above
 
     //Data and Clock LEDs
-    FastLED.addLeds<LED_TYPE, DATA_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+    FastLED.addLeds<LED_TYPE, CLOCK_PIN, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 
     //Data only LEDs
     //FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
