@@ -65,6 +65,13 @@ namespace RETURN_CODES
     };
 }
 
+typedef struct __attribute__((__packed__))
+{
+	uint8_t type;
+	uint16_t pixelCount;
+	uint8_t spiSpeed;
+} config_t;
+
 uint16_t numLEDs = NUM_LEDS;
 uint8_t bytesPerPixel = 3;
 
@@ -170,9 +177,30 @@ inline void getData()
         }
         else if (cmd == CMDTYPE::SETUP_DATA)
         {
-            for(int i=0; i<size; i++) Serial.read();
-            // Just succeed. Config is hardcoded at compile time
-            Serial.write(RETURN_CODES::SUCCESS);
+            // for(int i=0; i<size; i++) Serial.read();
+
+            uint8_t result = RETURN_CODES::SUCCESS;
+            config_t temp;
+
+            if (size != sizeof(config_t))
+            {
+                result = RETURN_CODES::ERROR_SIZE;
+            }
+            else
+            {
+                size_t read = Serial.readBytes((char*)&temp, sizeof(config_t));
+                if (read != size)
+                {
+                    result = RETURN_CODES::ERROR_SIZE;
+                }
+                else
+                {
+                    if(temp.pixelCount / bytesPerPixel != NUM_LEDS)
+                        result = RETURN_CODES::ERROR_PIXEL_COUNT;
+                }
+            }
+
+            Serial.write(result);
         }
         else if (cmd == CMDTYPE::BRIGHTNESS)
         {
