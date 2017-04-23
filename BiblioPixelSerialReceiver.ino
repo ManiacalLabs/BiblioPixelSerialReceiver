@@ -14,7 +14,7 @@ All Firmware options go here!
 // #define USE_EEPROM
 
 // If not using EEPROM, you can specify device ID here
-#ifndef USE_EEPROMo
+#ifndef USE_EEPROM
     const uint8_t deviceID = 0;
 #endif
 
